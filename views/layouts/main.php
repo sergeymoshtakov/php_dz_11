@@ -36,12 +36,25 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'brandUrl' => Yii::$app->homeUrl,
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
     ]);
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
             ['label' => 'About', 'url' => ['/site/about']],
             ['label' => 'Contact', 'url' => ['/site/contact']],
+            !Yii::$app->user->isGuest && Yii::$app->user->identity->role == 'admin'
+                ? ['label' => 'Admin Panel', 'url' => ['/user/index']]
+                : '',
+            !Yii::$app->user->isGuest && Yii::$app->user->identity->role == 'user'
+                ? ['label' => 'Change password', 'url' => ['/user/change-password']]
+                : '',
+            !Yii::$app->user->isGuest && Yii::$app->user->identity->role == 'user'
+                ? ['label' => 'Delete account', 'url' => ['/user/delete-account']]
+                : '',
+            Yii::$app->user->isGuest
+                ? ['label' => 'Signup', 'url' => ['/user/signup']]
+                : '',
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
                 : '<li class="nav-item">'
@@ -54,6 +67,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     . '</li>'
         ]
     ]);
+
     NavBar::end();
     ?>
 </header>

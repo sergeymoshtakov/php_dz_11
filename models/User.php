@@ -8,6 +8,7 @@ use yii\web\IdentityInterface;
 
 class User extends ActiveRecord implements IdentityInterface
 {
+    public $password;
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
@@ -19,10 +20,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email', 'password_hash'], 'required'],
+            [['username', 'email', 'password_hash', 'role'], 'required'],
             [['username', 'email'], 'unique'],
             [['status'], 'integer'],
-            [['auth_key', 'password_hash', 'password_reset_token'], 'string', 'max' => 255],
+            [['auth_key', 'password_hash', 'password_reset_token', 'role'], 'string', 'max' => 255],
         ];
     }
 
@@ -60,14 +61,29 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
-
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+    public function generatePasswordHash($password)
+    {
+        return Yii::$app->security->generatePasswordHash($password);
     }
 
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => \yii\behaviors\TimestampBehavior::class,
+                'value' => function () {
+                    return date('Y-m-d H:i:s');
+                },
+            ],
+        ];
     }
 }
