@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 use app\models\User;
 
@@ -27,15 +28,15 @@ class SignupForm extends Model
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
-            $user->role = 'user';
             $user->setPassword($this->password);
             $user->generateAuthKey();
-
             if ($user->save()) {
-                return $user; // Возвращаем объект пользователя, если сохранение успешно
+                $auth = Yii::$app->authManager;
+                $userRole = $auth->getRole('user');
+                $auth->assign($userRole, $user->getId());
+                return $user;
             }
         }
-
-        return null; // Возвращаем null в случае ошибки или невалидных данных
+        return null;
     }
 }

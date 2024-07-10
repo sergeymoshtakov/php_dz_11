@@ -37,35 +37,38 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
     ]);
 
+    $menuItems = [
+        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'About', 'url' => ['/site/about']],
+        ['label' => 'Contact', 'url' => ['/site/contact']],
+    ];
+
+    if (Yii::$app->user->isGuest) {
+        $menuItems[] = ['label' => 'Signup', 'url' => ['/user/signup']];
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+    } else {
+        switch (Yii::$app->user->identity->role) {
+            case 'admin':
+                $menuItems[] = ['label' => 'Admin Panel', 'url' => ['/user/index']];
+                break;
+            case 'user':
+                $menuItems[] = ['label' => 'Change password', 'url' => ['/user/change-password']];
+                $menuItems[] = ['label' => 'Delete account', 'url' => ['/user/delete-account']];
+                break;
+        }
+        $menuItems[] = '<li class="nav-item">'
+            . Html::beginForm(['/site/logout'])
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'nav-link btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
+    }
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            !Yii::$app->user->isGuest && Yii::$app->user->identity->role == 'admin'
-                ? ['label' => 'Admin Panel', 'url' => ['/user/index']]
-                : '',
-            !Yii::$app->user->isGuest && Yii::$app->user->identity->role == 'user'
-                ? ['label' => 'Change password', 'url' => ['/user/change-password']]
-                : '',
-            !Yii::$app->user->isGuest && Yii::$app->user->identity->role == 'user'
-                ? ['label' => 'Delete account', 'url' => ['/user/delete-account']]
-                : '',
-            Yii::$app->user->isGuest
-                ? ['label' => 'Signup', 'url' => ['/user/signup']]
-                : '',
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-        ]
+        'items' => $menuItems,
     ]);
 
     NavBar::end();

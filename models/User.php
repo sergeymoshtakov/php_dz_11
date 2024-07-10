@@ -20,10 +20,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email', 'password_hash', 'role'], 'required'],
+            [['username', 'email', 'password_hash'], 'required'],
             [['username', 'email'], 'unique'],
             [['status'], 'integer'],
-            [['auth_key', 'password_hash', 'password_reset_token', 'role'], 'string', 'max' => 255],
+            [['auth_key', 'password_hash', 'password_reset_token'], 'string', 'max' => 255],
         ];
     }
 
@@ -61,13 +61,10 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
+
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
-    }
-    public function generatePasswordHash($password)
-    {
-        return Yii::$app->security->generatePasswordHash($password);
     }
 
     public function generateAuthKey()
@@ -85,5 +82,16 @@ class User extends ActiveRecord implements IdentityInterface
                 },
             ],
         ];
+    }
+
+    public function getRole()
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($this->getId());
+        return array_keys($roles);
+    }
+
+    public function hasRole($roleName)
+    {
+        return Yii::$app->authManager->checkAccess($this->getId(), $roleName);
     }
 }

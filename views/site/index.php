@@ -16,6 +16,7 @@ $this->title = 'My Yii Application';
                     <h2>Ви увійшли як:</h2>
                     <p>Логін: <?= Yii::$app->user->identity->username ?></p>
                     <p>Пароль: <?= Yii::$app->user->identity->password_hash ?></p>
+                    <p>Роль: <?= Yii::$app->user->identity->role ?></p>
                 <?php endif; ?>
             </div>
         </div>
