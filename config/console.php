@@ -31,13 +31,19 @@ $config = [
         ],
     ],
     'params' => $params,
-    /*
     'controllerMap' => [
-        'fixture' => [ // Fixture generation command line.
-            'class' => 'yii\faker\FixtureController',
+        'elfinder' => [
+            'class' => 'app\controllers\ElFinderController',
+            'disabledCommands' => ['netmount'],
+            'roots' => [
+                [
+                    'baseUrl' => '@web/uploads',
+                    'basePath' => '@webroot/uploads',
+                    'access' => ['read' => '*', 'write' => 'admin'], // Only allow write access for admin
+                ]
+            ],
         ],
     ],
-    */
 ];
 
 if (YII_ENV_DEV) {

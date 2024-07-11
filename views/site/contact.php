@@ -7,6 +7,8 @@
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\captcha\Captcha;
+use dosamigos\ckeditor\CKEditor;
+use yii\helpers\Url;
 
 $this->title = 'Contact';
 $this->params['breadcrumbs'][] = $this->title;
@@ -43,21 +45,30 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
 
-                    <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
+                <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
 
-                    <?= $form->field($model, 'email') ?>
+                <?= $form->field($model, 'email') ?>
 
-                    <?= $form->field($model, 'subject') ?>
+                <?= $form->field($model, 'subject') ?>
 
-                    <?= $form->field($model, 'body')->textarea(['rows' => 6]) ?>
+                <?= $form->field($model, 'body')->widget(CKEditor::className(), [
+                    'options' => ['rows' => 6],
+                    'preset' => 'full',
+                    'clientOptions' => [
+                        'filebrowserBrowseUrl' => Url::to(['elfinder/manager']),
+                        'filebrowserUploadUrl' => Url::to(['elfinder/connector']),
+                        'filebrowserImageBrowseUrl' => Url::to(['elfinder/manager']),
+                        'extraPlugins' => 'uploadimage',
+                    ],
+                ]); ?>
 
-                    <?= $form->field($model, 'verifyCode')->widget(Captcha::class, [
-                        'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
-                    ]) ?>
+                <?= $form->field($model, 'verifyCode')->widget(Captcha::class, [
+                    'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
+                ]) ?>
 
-                    <div class="form-group">
-                        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>
-                    </div>
+                <div class="form-group">
+                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>
+                </div>
 
                 <?php ActiveForm::end(); ?>
 
