@@ -50,7 +50,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         switch (Yii::$app->user->identity->role) {
             case 'admin':
                 $menuItems[] = ['label' => 'Admin Panel', 'url' => ['/user/index']];
-                $menuItems[] = ['label' => 'File Server', 'url' => ['/site/fileserver']];
+                $menuItems[] = ['label' => 'File Server', 'url' => ['/site/upload']];
                 break;
             case 'user':
                 $menuItems[] = ['label' => 'Change password', 'url' => ['/user/change-password']];
