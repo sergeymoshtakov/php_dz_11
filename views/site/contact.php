@@ -8,6 +8,7 @@ use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\captcha\Captcha;
 use dosamigos\ckeditor\CKEditor;
+use mihaildev\elfinder\ElFinder;
 use yii\helpers\Url;
 
 $this->title = 'Contact';
@@ -51,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'subject') ?>
 
-                <?= $form->field($model, 'body')->widget(CKEditor::className(), [
+               <?= $form->field($model, 'body')->widget(CKEditor::className(), [
                     'options' => ['rows' => 6],
                     'preset' => 'full',
                     'clientOptions' => [
@@ -60,7 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filebrowserImageBrowseUrl' => Url::to(['elfinder/manager']),
                         'extraPlugins' => 'uploadimage',
                     ],
-                ]); ?>
+                ]); ?> 
+
 
                 <?= $form->field($model, 'verifyCode')->widget(Captcha::class, [
                     'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',

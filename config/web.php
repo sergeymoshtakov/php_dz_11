@@ -43,23 +43,6 @@ $config = [
         'authManager' => [
             'class' => 'yii\rbac\DbManager', // менеджер RBAC на основе базы данных
         ],
-        'elFinder' => [
-            'class' => 'mihaildev\elfinder\PathController', // настройка ElFinder для работы с файлами
-            'access' => ['@'], // доступ только для авторизованных пользователей
-            'root' => [
-                'baseUrl' => '@web/uploads', // базовый URL для доступа к файлам
-                'basePath' => '@webroot/uploads', // базовый путь к файлам на сервере
-                'access' => ['read' => '*', 'write' => '*'], // разрешение на чтение и запись
-            ],
-            'watermark' => [
-                'source' => __DIR__.'/logo.png', // путь к файлу с водяным знаком
-                'marginRight' => 5, // отступ справа
-                'marginBottom' => 5, // отступ снизу
-                'quality' => 95, // качество изображения JPEG
-                'transparency' => 70, // прозрачность водяного знака (0-100)
-                'targetType' => IMG_GIF | IMG_JPG | IMG_PNG | IMG_WBMP // поддерживаемые форматы изображений
-            ]
-        ],
         'urlManager' => [
             'enablePrettyUrl' => true, // использование красивых URL
             'showScriptName' => false, // скрытие скриптового имени
@@ -71,21 +54,20 @@ $config = [
         ],
     ],
     'params' => $params, // параметры приложения
-    'modules' => [
+    'controllerMap' => [
         'elfinder' => [
-            'class' => 'mihaildev\elfinder\Module', // модуль ElFinder
-            'controllerMap' => [
-                'connector' => 'mihaildev\elfinder\controllers\ConnectorController',
-                'manager' => 'mihaildev\elfinder\controllers\ManageController',
-            ],
+            'class' => 'mihaildev\elfinder\Controller',
+            'access' => ['@'], //глобальный доступ к фаил менеджеру @ - для авторизорованных , ? - для гостей , чтоб открыть всем ['@', '?']
+            'disabledCommands' => ['netmount'], //отключение ненужных команд https://github.com/Studio-42/elFinder/wiki/Client-configuration-options#commands
             'roots' => [
                 [
-                    'baseUrl' => '@web/uploads',
-                    'basePath' => '@webroot/uploads',
-                    'access' => ['read' => '*', 'write' => '*'], // доступ на чтение и запись
+                    'baseUrl'=>'@web',
+                    'basePath'=>'@webroot',
+                    'path' => 'files',
+                    'name' => 'Global'
                 ],
             ],
-        ],
+        ]
     ],
 ];
 
